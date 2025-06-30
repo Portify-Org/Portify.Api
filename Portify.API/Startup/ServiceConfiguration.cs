@@ -29,6 +29,7 @@ public class ServiceConfiguration
         // Add other shared services here
         AddServices(services);
         AddDatabase(services, configuration);
+        AddCorsPolicy(services, configuration);
 
 
     }
@@ -91,6 +92,21 @@ public class ServiceConfiguration
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<PortifyDbContext>());
     }
 
+    private static void AddCorsPolicy(IServiceCollection services, IConfiguration configuration)
+    {
+        CorsOptions corsOptions = configuration.GetSection(CorsOptions.SectionName).Get<CorsOptions>()!;
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy(CorsOptions.PolicyName, policy =>
+            {
+                policy.WithOrigins(corsOptions.AllowedOrigins)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+        });
+    }
     private static void AddServices(IServiceCollection services)
         => services.AddScoped<IJwtService, JwtService>();
 }
