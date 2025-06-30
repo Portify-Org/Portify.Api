@@ -1,4 +1,5 @@
 using Portify.API.Startup;
+using Portify.Infrastructure.Configuration.Settings;
 
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(CorsOptions.PolicyName);
 
 app.UseAuthentication();
 
